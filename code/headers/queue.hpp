@@ -32,14 +32,16 @@ namespace r2d2 {
             if constexpr (Optimization == queue_optimization::WRITE) {
                 buffer[index] = item;
             } else {
-                memmove(
-                    (void *) (buffer + 1),
-                    (const void *) buffer,
-                    index
-                );
-
-                for (size_t i = index; i != 0; i--) {
-                    buffer[i] = buffer[i - 1];
+                if constexpr (std::is_pod_v<T>) {
+                    memmove(
+                        (void *) (buffer + 1),
+                        (const void *) buffer,
+                        index
+                    );
+                } else {
+                    for (size_t i = index; i != 0; i--) {
+                        buffer[i] = buffer[i - 1];
+                    }
                 }
 
                 buffer[0] = item;
