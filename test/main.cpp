@@ -140,3 +140,45 @@ TEST_CASE("Queue empty, full, max_size and size work", "[queue]") {
 
     REQUIRE(q.empty());
 }
+
+TEST_CASE("Read-optimized queue front and back work", "[queue]") {
+    queue_c<int, 16, queue_optimization::READ> q;
+
+    q.push(12);
+    q.push(24);
+
+    REQUIRE(q.front() == 12);
+    REQUIRE(q.back() == 24);
+}
+
+TEST_CASE("Read-optimized queue popping an empty queue works", "[queue]") {
+    queue_c<int, 2, queue_optimization::READ> q;
+
+    q.pop();
+
+    REQUIRE(true);
+}
+
+TEST_CASE("Read-optimized queue empty, full, max_size and size work", "[queue]") {
+    queue_c<int, 2, queue_optimization::READ> q;
+
+    q.push(12);
+    q.push(24);
+
+    REQUIRE(q.size() == 2);
+    REQUIRE(q.max_size() == 2);
+    REQUIRE(q.full());
+
+    q.pop();
+    q.pop();
+
+    REQUIRE(q.empty());
+}
+
+TEST_CASE("optimized_for given back the correct result", "[queue]") {
+    queue_c<int, 2, queue_optimization::WRITE> a;
+    queue_c<int, 2, queue_optimization::READ> b;
+
+    REQUIRE(a.optimized_for() == queue_optimization::WRITE);
+    REQUIRE(b.optimized_for() == queue_optimization::READ);
+}
