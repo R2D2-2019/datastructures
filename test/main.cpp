@@ -182,3 +182,11 @@ TEST_CASE("optimized_for given back the correct result", "[queue]") {
     REQUIRE(a.optimized_for() == queue_optimization::WRITE);
     REQUIRE(b.optimized_for() == queue_optimization::READ);
 }
+
+TEST_CASE("test que is empty after clear()", "queue"){
+    queue_c<int, 5> a;
+    a.push(10);
+    a.clear();
+
+    REQUIRE(a.empty() == true);
+}
