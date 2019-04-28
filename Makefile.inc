@@ -9,12 +9,6 @@
 #############################################################################
 
 SEARCH  += $(DATASTRUCTURES)/code/headers
-SEARCH  += $(DATASTRUCTURES)/code/src
-
-
-# source files in this library
-SOURCES += $(wildcard $(DATASTRUCTURES)/code/src/*.cpp)
 
 # header files in this library
 HEADERS += $(wildcard $(DATASTRUCTURES)/code/headers/*.hpp)
-
