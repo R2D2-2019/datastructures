@@ -32,16 +32,8 @@ namespace r2d2 {
             if constexpr (Optimization == queue_optimization::WRITE) {
                 buffer[index] = item;
             } else {
-                if constexpr (std::is_pod_v<T>) {
-                    memmove(
-                        (void *) (buffer + 1),
-                        (const void *) buffer,
-                        index
-                    );
-                } else {
-                    for (size_t i = index; i != 0; i--) {
-                        buffer[i] = buffer[i - 1];
-                    }
+                for (size_t i = index; i != 0; i--) {
+                    buffer[i] = buffer[i - 1];
                 }
 
                 buffer[0] = item;
@@ -55,21 +47,8 @@ namespace r2d2 {
          */
         void pop() {
             if constexpr (Optimization == queue_optimization::WRITE) {
-                if constexpr (std::is_pod_v<T>) {
-                    /*
-                     * Since the destination address is before
-                     * the source address, a memcpy can be used instead
-                     * of memmove.
-                     */
-                    memcpy(
-                        (void *) buffer,
-                        (const void *) (buffer + 1),
-                        index
-                    );
-                } else {
-                    for (size_t i = 1; i < index; i++) {
-                        buffer[i - 1] = buffer[i];
-                    }
+                for (size_t i = 1; i < index; i++) {
+                    buffer[i - 1] = buffer[i];
                 }
             }
 
