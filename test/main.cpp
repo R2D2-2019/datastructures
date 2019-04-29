@@ -1,4 +1,5 @@
-#include "ostream"
+#include <ostream>
+#include <new>
 
 #define CATCH_CONFIG_MAIN
 #include <catch.hpp>

@@ -37,7 +37,7 @@ namespace r2d2 {
 
             if (full()){
                 // call the destructor of T
-                buffer[tail].~T();
+                buffer[head].~T();
             }
 
             buffer[tail++] = val;
