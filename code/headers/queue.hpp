@@ -138,6 +138,17 @@ namespace r2d2 {
         }
 
         /**
+         * Clears the queue  
+         *
+         * @brief Clears the queue 
+         * @details Clears the queue by setting the index to zero
+         * @return 
+         */
+        void clear() {
+            index = 0;
+        }
+
+        /**
          * Get the maximum size of the queue.
          *
          * @return constexpr size_t
