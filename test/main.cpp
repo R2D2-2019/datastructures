@@ -74,6 +74,54 @@ TEST_CASE("Ringbuffer operator[] works", "[ringbuffer]") {
     REQUIRE(buffer[1] == 18);
 }
 
+
+TEST_CASE("Ringbuffer correctly calls destructor", "[ringbuffer]") {
+    struct x{
+        bool * c;
+
+        x(): c(nullptr) {}
+
+        x(bool * c): c(c) {}
+
+        ~x() {
+            (*c) = false;
+        }
+    };
+    
+    // create ringbuffer with 1 as size
+    ringbuffer_c<x, 1> buffer;
+    REQUIRE(buffer.max_size() == 1);
+
+    // create a pointer to a bool that is false
+    bool * first_c = new bool(false);
+    REQUIRE((*first_c) == false);
+
+    // push the struct with the pointer to the ringbuffer
+    buffer.push(x(first_c));
+
+    // check if push is oke
+    REQUIRE(buffer.size() == 1);
+
+    // Set buffer on true
+    (*buffer[0].c) = true;
+    REQUIRE((*first_c) == true);
+
+    // create a pointer to a bool
+    bool * second_c = new bool(false);
+
+    // push the struct with the pointer to the ringbuffer
+    buffer.push(x(second_c));
+
+    // make sure buffer size is still 1
+    REQUIRE(buffer.size() == 1);
+
+    // check if first push is destructed
+    REQUIRE((*first_c) == false);
+
+    delete first_c;
+    delete second_c;
+}
+
 /** QUEUE **/
 
 TEST_CASE("Queue stores data", "[queue]") {

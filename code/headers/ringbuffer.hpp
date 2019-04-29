@@ -35,6 +35,11 @@ namespace r2d2 {
                 tail = 0;
             }
 
+            if (full()){
+                // call the destructor of T
+                buffer[tail].~T();
+            }
+
             buffer[tail++] = val;
 
             if (full()) {
