@@ -30,10 +30,12 @@ namespace r2d2 {
          * @param val
          * @return
          */
-        constexpr void push(const T &val) {
+        constexpr T& push(const T &val) {
             if (tail >= MaxSize) {
                 tail = 0;
             }
+
+            size_t prev_tail = tail;
 
             buffer[tail++] = val;
 
@@ -43,6 +45,28 @@ namespace r2d2 {
             } else {
                 used += 1;
             }
+
+            return buffer[prev_tail];
+        }
+
+        template<typename ...Args>
+        constexpr T& emplace(Args&& ...args) {
+             if (tail >= MaxSize) {
+                tail = 0;
+            }
+
+            size_t prev_tail = tail;
+
+            buffer[tail++] = T(std::forward<Args>(args)...);
+
+            if (full()) {
+                tail = head;
+                head = (head + 1) % MaxSize;
+            } else {
+                used += 1;
+            }
+
+            return buffer[prev_tail];
         }
 
         /**
