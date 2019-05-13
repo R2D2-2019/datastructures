@@ -74,6 +74,22 @@ TEST_CASE("Ringbuffer operator[] works", "[ringbuffer]") {
     REQUIRE(buffer[1] == 18);
 }
 
+TEST_CASE("Ringbuffer emplace works", "[ringbuffer]") {
+    struct x {
+        int a, b;
+        x() = default;
+        x(int a, int b) : a(a), b(b) {}
+    };
+
+    ringbuffer_c<x, 2> buffer;
+
+    buffer.emplace(2, 5);
+
+    REQUIRE(buffer[0].a == 2);
+    REQUIRE(buffer[0].b == 5);
+}
+
+
 /** QUEUE **/
 
 TEST_CASE("Queue stores data", "[queue]") {

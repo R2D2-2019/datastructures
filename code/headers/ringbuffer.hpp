@@ -5,6 +5,10 @@
 namespace r2d2 {
     /**
      * Simple ringbuffer implementation.
+     * 
+     * Note: when you use a MaxSize that is not a power of 2,
+     * you are missing out on a compiler optimization that replaces
+     * the (expensive) modulo operation with a logical and.
      *
      * @tparam T
      * @tparam MaxSize
@@ -17,6 +21,29 @@ namespace r2d2 {
         size_t head = 0;
         size_t tail = 0;
         size_t used = 0;
+
+        /**
+         * Get the index at which a
+         * item can be stored.
+         * 
+         * @return size_t 
+         */
+        constexpr size_t get_next_location() {
+            if (tail >= MaxSize) {
+                tail = 0;
+            }
+
+            size_t prev_tail = tail++;
+
+            if (full()) {
+                tail = head;
+                head = (head + 1) % MaxSize;
+            } else {
+                used += 1;
+            }
+
+            return prev_tail;
+        }
 
     public:
         /**
@@ -31,42 +58,25 @@ namespace r2d2 {
          * @return
          */
         constexpr T& push(const T &val) {
-            if (tail >= MaxSize) {
-                tail = 0;
-            }
+            const auto index = get_next_location();
+            buffer[index] = val;
 
-            size_t prev_tail = tail;
-
-            buffer[tail++] = val;
-
-            if (full()) {
-                tail = head;
-                head = (head + 1) % MaxSize;
-            } else {
-                used += 1;
-            }
-
-            return buffer[prev_tail];
+            return buffer[index];
         }
 
+        /**
+         * Emplace an item into the ringbuffer.
+         * 
+         * @tparam Args 
+         * @param args 
+         * @return constexpr T& 
+         */
         template<typename ...Args>
         constexpr T& emplace(Args&& ...args) {
-             if (tail >= MaxSize) {
-                tail = 0;
-            }
-
-            size_t prev_tail = tail;
-
-            buffer[tail++] = T(std::forward<Args>(args)...);
-
-            if (full()) {
-                tail = head;
-                head = (head + 1) % MaxSize;
-            } else {
-                used += 1;
-            }
-
-            return buffer[prev_tail];
+            const auto index = get_next_location();
+            buffer[index] = T(std::forward<Args>(args)...);
+            
+            return buffer[index];
         }
 
         /**
