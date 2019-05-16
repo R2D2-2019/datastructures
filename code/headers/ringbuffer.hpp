@@ -117,6 +117,27 @@ namespace r2d2 {
         }
 
         /**
+         * copy the first item from the buffer and pop
+         * 
+         * @return constexpr T 
+         */
+        constexpr T copy_and_pop_front() {
+            // Get the data on head
+            T item = buffer[head];
+
+            // move the head to its new location
+            if (MaxSize - head > 0){
+                head++;
+            } else {
+                head = 0;
+            }
+
+            used--;
+
+            return item;
+        }
+
+        /**
          * Reset (empty) the ringbuffer.
          *
          * @return
