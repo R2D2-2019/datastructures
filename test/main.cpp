@@ -37,6 +37,30 @@ TEST_CASE("Ringbuffer copy and pop reduces size", "[ringbuffer]") {
     REQUIRE(buffer.empty());
 }
 
+TEST_CASE("Ringbuffer copy and pop front reduces size", "[ringbuffer]") {
+    ringbuffer_c<int, 16> buffer;
+    buffer.push(5);
+    buffer.copy_and_pop_front();
+
+    REQUIRE(buffer.empty());
+}
+
+TEST_CASE("Ringbuffer copy and pop front reduces size at the front", "[ringbuffer]") {
+    ringbuffer_c<int, 16> buffer;
+    buffer.push(5);
+    buffer.push(15);
+    buffer.push(25);
+
+    REQUIRE(buffer[0] == 5);
+    REQUIRE(buffer[1] == 15);
+    REQUIRE(buffer[2] == 25);
+
+    buffer.copy_and_pop_front();
+
+    REQUIRE(buffer[0] == 15);
+    REQUIRE(buffer[1] == 25);
+}
+
 TEST_CASE("Ringbuffer full and reset works", "[ringbuffer]") {
     ringbuffer_c<int, 2> buffer;
 
