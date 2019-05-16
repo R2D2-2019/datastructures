@@ -53,10 +53,12 @@ TEST_CASE("Ringbuffer copy and pop front item is correct", "[ringbuffer]") {
 
     REQUIRE(buffer[0] == 5);
 
-    auto t = buffer.copy_and_pop_front();
+    auto t0 = buffer.copy_and_pop_front();
+    auto t1 = buffer.copy_and_pop_front();
 
-    REQUIRE(t == 5);
-    REQUIRE(buffer[0] == 15);
+    REQUIRE(t0 == 5);
+    REQUIRE(t1 == 15);
+    REQUIRE(buffer[0] == 25);
 }
 
 TEST_CASE("Ringbuffer copy and pop front reduces size at the front", "[ringbuffer]") {
