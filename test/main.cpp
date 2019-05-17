@@ -108,11 +108,10 @@ TEST_CASE("Ringbuffer copy and pop front rolover correct", "[ringbuffer]") {
     buffer.push(5);
     buffer.push(92);
 
-    // move head to end of ringbuffer
+    // move head to end of ringbuffer and trigger rolover
     buffer.copy_and_pop_front();
     buffer.copy_and_pop_front();
 
-    // trigger rolover
     buffer.push(18);
     buffer.push(28);
 
