@@ -126,7 +126,7 @@ namespace r2d2 {
             T item = buffer[head];
 
             // move the head to its new location
-            if (MaxSize - head > 0){
+            if (head < (MaxSize - 1)) {
                 head++;
             } else {
                 head = 0;

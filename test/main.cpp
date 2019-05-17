@@ -101,6 +101,25 @@ TEST_CASE("Ringbuffer wraps around on overflow", "[ringbuffer]") {
     REQUIRE(buffer.copy_and_pop() == 18);
 }
 
+TEST_CASE("Ringbuffer copy and pop front rolover correct", "[ringbuffer]") {
+    ringbuffer_c<int, 2> buffer;
+
+    // move tail to end of ringbuffer
+    buffer.push(5);
+    buffer.push(92);
+
+    // move head to end of ringbuffer and trigger rolover
+    buffer.copy_and_pop_front();
+    buffer.copy_and_pop_front();
+
+    buffer.push(18);
+    buffer.push(28);
+
+    // check values
+    REQUIRE(buffer.copy_and_pop_front() == 18);
+    REQUIRE(buffer.copy_and_pop_front() == 28);
+}
+
 TEST_CASE("Ringbuffer operator[] works", "[ringbuffer]") {
     ringbuffer_c<int, 2> buffer;
 
